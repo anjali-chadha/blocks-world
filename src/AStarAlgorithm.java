@@ -24,28 +24,49 @@ public class AStarAlgorithm {
         aStarAnalysis = new AStarAnalysis();
     }
 
-    public static void runAStarAlgorithm(Heuristic h, Problem p) {
+    public static AStarAnalysis runAStarAlgorithm(Heuristic h, Problem p) {
         if (aStar == null) {
             aStar = new AStarAlgorithm(h);
         }
         Node endNode = aStar.aStarSearch(p);
         aStar.traceback(endNode);
         System.out.println(aStar.aStarAnalysis.toString());
+        AStarAnalysis starAnalysis = aStar.aStarAnalysis;
+        aStar.cleanUp();
+        return starAnalysis;
+    }
+
+    private void cleanUp() {
+       aStar = null;
     }
 
     //TODO: Improve the object creation of child node using Builder pattern
     private Node aStarSearch(Problem problem) {
         Node initialNode = new Node(problem.getInitialState(), null);
+        initialNode.setCostToReachGoal(heuristic.cost(initialNode.getState(), problem)); ;
         frontier.add(initialNode);
         while (!frontier.isEmpty()) {
-            if(frontier.size() > aStarAnalysis.maxFrontierSize) {
-                aStarAnalysis.maxFrontierSize = frontier.size();
+            if(frontier.size() > aStarAnalysis.getMaxFrontierSize()) {
+                aStarAnalysis.setMaxFrontierSize( frontier.size());
             }
 
             Node currentNode = frontier.poll();
             State currentState = currentNode.getState();
-            aStarAnalysis.iterationsCount++;
+            if(aStarAnalysis.getIterationsCount() > 15000){
+                return null;
+            } else {
+                //currentState.printState();
+                aStarAnalysis.setIterationsCount(aStarAnalysis.getIterationsCount()+1);
+                System.out.println("iter="+aStarAnalysis.getIterationsCount()+
+                ", queue="+ aStarAnalysis.getMaxFrontierSize()+
+                ", f=g+h="+ currentNode.getTotalCost()+
+                ", depth="+ currentNode.getCostToReachNode());
+            }
+
             if (problem.isGoalState(currentState)) {
+                System.out.println("Success! total_goal_tests="+aStarAnalysis.getIterationsCount()+
+                        ", max_queue_size="+ aStarAnalysis.getMaxFrontierSize()+
+                        ", depth="+ currentNode.getCostToReachNode());
                 return currentNode; //Goal Node
             }
             exploredStateSet.add(currentState);
@@ -75,38 +96,20 @@ public class AStarAlgorithm {
     }
 
     void traceback(Node endNode) {
-        Deque<Action> moveList = new ArrayDeque<>();
+        Deque<State> moveList = new ArrayDeque<>();
         Node current = endNode;
         while(current != null) {
-            moveList.push(current.getState().getAction());
+            moveList.push(current.getState());
             current = current.getParent();
         }
 
+        System.out.println("Solution Path:");
+
         int size = moveList.size();
         while(size > 0) {
-            Action a = moveList.pop();
-            System.out.println(a.printPath());
+            moveList.pop().printState();
             size --;
-            aStarAnalysis.numberOfMoves++;
+            aStarAnalysis.setNumberOfMoves(aStarAnalysis.getNumberOfMoves()+1);
         }
     }
-
-
-    static class AStarAnalysis {
-
-        private int iterationsCount;
-        private int numberOfMoves = -1; //Because we want to exclude the initial state step
-        private int maxFrontierSize = Integer.MIN_VALUE;
-
-        @Override
-        public String toString() {
-            return "AStarAnalysis{" +
-                    "iterationsCount=" + iterationsCount +
-                    ", numberOfMoves=" + numberOfMoves +
-                    ", maxFrontierSize=" + maxFrontierSize +
-                    '}';
-        }
-    }
-
-
 }

@@ -63,7 +63,7 @@ public class State {
         System.out.println();
         for(BlockStack s: stacks) {
             StringBuffer buffer = new StringBuffer();
-            buffer.append(s.getId() + 1 + " || ");
+            buffer.append(s.getId() + 1 + " | ");
             StringBuffer buffer2 = new StringBuffer();
             for(Block b: s.getStack()) {
                 buffer2.insert( 0, " " + b.getId());

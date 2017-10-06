@@ -64,9 +64,10 @@ public class BlockStack {
 
     @Override
     public String toString() {
-        return "BlockStack{" +
-                "id=" + id +
-                ", stack=" + stack +
-                '}';
+        StringBuffer str = new StringBuffer();
+        for(Block b: stack) {
+            str.insert(0, b.getId());
+        }
+        return id + str.toString();
     }
 }

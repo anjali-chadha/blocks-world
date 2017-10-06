@@ -7,7 +7,6 @@ public class Problem {
     private State goalState;
     private State initialState;
 
-    //TODO: Rename the functions same as asked in assignment.
     Problem(int blockCount, int stackCount) {
         this.blockCount = blockCount;
         this.stackCount = stackCount;
@@ -19,7 +18,7 @@ public class Problem {
      * Creating an initial state.
      * Start from the goal state. Using random API, move blocks amongst stacks.
      */
-    private State initialStateU() {
+    private State initialState() {
         Random r = new Random();
         int firstLoopCount = r.nextInt(blockCount) + 1;
         State state = createStateCopy(goalState);
@@ -36,6 +35,7 @@ public class Problem {
             secondLoopCount--;
         }
         state.setAction(new Action(0,0));//TODO
+        System.out.print("Initial State: ");
         state.printState();
         return state;
     }
@@ -47,20 +47,28 @@ public class Problem {
      3 | A D
      * @return
      */
-    private State initialState() {
+    private State initialStateU() {
         List<BlockStack> stackList = new ArrayList<>();
         Deque<Block> stack1 = new ArrayDeque<>();
         Deque<Block> stack2 = new ArrayDeque<>();
         Deque<Block> stack3 = new ArrayDeque<>();
-        stack1.push(blockFactory.getBlock('B'));
-        stack2.push(blockFactory.getBlock('C'));
+        Deque<Block> stack4 = new ArrayDeque<>();
+        Deque<Block> stack5 = new ArrayDeque<>();
+        stack1.push(blockFactory.getBlock('D'));
         stack2.push(blockFactory.getBlock('E'));
-        stack3.push(blockFactory.getBlock('A'));
-        stack3.push(blockFactory.getBlock('D'));
-        //stack3.push(blockFactory.getBlock('F'));
+        stack2.push(blockFactory.getBlock('F'));
+        stack2.push(blockFactory.getBlock('I'));
+        stack2.push(blockFactory.getBlock('J'));
+        stack3.push(blockFactory.getBlock('B'));
+        stack3.push(blockFactory.getBlock('G'));
+        stack4.push(blockFactory.getBlock('C'));
+        stack4.push(blockFactory.getBlock('H'));
+        stack5.push(blockFactory.getBlock('A'));
         stackList.add(new BlockStack(0,stack1));
         stackList.add(new BlockStack(1, stack2));
         stackList.add(new BlockStack(2, stack3));
+        stackList.add(new BlockStack(3, stack4));
+        stackList.add(new BlockStack(4, stack5));
         State state = new State(stackList);
         state.setAction(new Action(0,0));//TODO
         state.printState();
@@ -97,7 +105,6 @@ public class Problem {
         return initialState;
     }
 
-    //TODO: Don't create a new goalState everytime. Cache it somewhere
     //Do the hashcode check first, followed by equality
     //Time saving
     boolean isGoalState(State state) {
@@ -158,5 +165,9 @@ public class Problem {
 
     public int getStackCount() {
         return stackCount;
+    }
+
+    public BlockFactory getBlockFactory() {
+        return blockFactory;
     }
 }

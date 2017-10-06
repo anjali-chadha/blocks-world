@@ -1,10 +1,5 @@
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
-/**
- * https://github.com/AnujTewari/Blocks-World-Puzzle/tree/master/Blocks%20World/src
- */
 public class HeuristicFunctions {
 
     /**
@@ -23,112 +18,109 @@ public class HeuristicFunctions {
      * @return
      */
     public static int heuristicCost1(State state, Problem problem) {
-        int blockCount = problem.getBlockCount();
-        int cost = blockCount;
+        List<Block> goalList = new ArrayList<>(problem.getGoalState().getStackList()
+                .get(0).getStack());
+        int n1 = goalList.size();
+        int cost = n1;
+
         Deque<Block> stack = state.getStackList().get(0).getStack();
         List<Block> list = new ArrayList<>(stack);
-        int len = list.size();
-        for (int i = len - 1; i > 0; i--) {
-            if(list.get(i).compareTo(list.get(i - 1 )) > 0) {
-                break;
+        int n2 = list.size();
+
+        for (int i = n1 - 1, j = n2 - 1; i >= 0 && j >= 0; i--, j--) {
+            //Can use == for Blocks. Unique blocks created. Check BlockFactory
+            if (goalList.get(i) == list.get(j)) {
+                cost--;
             }
-            cost --;
         }
         return cost;
     }
 
     /**
-     * If a block is on top of an element
-     * @param state
-     * @param problem
-     * @return
+     * This heuristic adds 2 for every block that is not currently directly on
+     * top of the block on which it has to be
+     * in the goal state or if there is such a block somewhere below it (in the
+     * same pile).
      */
-    public static int heuristicCost2(State state, Problem problem) {
-        int stackCount = problem.getStackCount();
+    public static int heuristicCost3(State state, Problem problem) {
         int cost = 0;
-
-        for(BlockStack stack2: state.getStackList().subList(1,stackCount)) {
-            List<Block> list = new ArrayList<>(stack2.getStack());
+        List<Block> goalList = new ArrayList<>(problem.getGoalState().getStackList()
+                .get(0).getStack());
+        int blockCount = problem.getBlockCount();
+        List<BlockStack> stackList = state.getStackList();
+        for (BlockStack stack : stackList) {
+            List<Block> list = new ArrayList<>(stack.getStack());
             int n = list.size();
-            for(int i = 1; i < n;i++) {
-                if(list.get(i).compareTo(list.get(i-1)) < 0) {
-                    cost = cost + 4;
-                } else {
-                    cost = cost + 1;
+
+            for (int i = 0; i < n-1; i++) {
+                int id1 = list.get(i).getId();
+                int id2 = list.get(i+1).getId();
+                if((id1-id2) != 1) {
+                    cost +=2;
                 }
             }
-        }
-        List<Block> list2 = new ArrayList<>(state.getStackList().get(0).getStack());
-        int n = list2.size();
-        for(int i = 1; i < n; i++) {
-            if(list2.get(i).compareTo(list2.get(i - 1)) > 0) {
-                cost = cost + 2;
+            if(list.size() != 0 && list.get(n-1).getId() != 'A') {
+                cost +=2;
             }
         }
         return cost;
     }
 
-    public static int heuristicCost3(State state, Problem problem) {
-        int cost = 0;
-        int stackCount = problem.getStackCount();
-
-        List<BlockStack> stackList = state.getStackList();
-        for(BlockStack stack: stackList.subList(1, stackCount)) {
-            List<Block> list = new ArrayList<>(stack.getStack());
-            int len = list.size();
-            cost = cost + len * (len+1)/2;
-        }
-
-        List<Block> stack1_list = new ArrayList<>(stackList.get(0).getStack());
-        int n = stack1_list.size() - 1;
-        while (n > 0) {
-            if(stack1_list.get(n).compareTo(stack1_list.get(n - 1)) < 0) {
-                continue;
-            }
-            cost = cost + n + 1;
-            n--;
-        }
-        return cost + heuristicCost1(state, problem);
-    }
-
     public static int heuristicCost4(State state, Problem problem) {
-        int cost = 0;
-        List<Block> goalList = new ArrayList<>(problem.getGoalState().getStackList().get(0).getStack());
-        int heur = 0;
-        List<Block> heurList = new ArrayList<>();
-        int blocksOutOfPlace = goalList.size();
-        List<Block> list1 = new ArrayList<>(state.getStackList().get(0).getStack());
-        if (!list1.isEmpty()) {
+        List<Block> goalList = new ArrayList<>(problem.getGoalState().getStackList()
+                .get(0).getStack());
+        List<Block> correctBlocksStack1 = new ArrayList<>();
+        int n1 = goalList.size();
+        int misplacedBlocksCount = n1;
 
-            int n = list1.size() - 1;
-            for (int i = n; i >=0; i--) {
-                if (goalList.get(i).equals(list1.get(i))) {
-                    heurList.add(goalList.get(i));
-                    blocksOutOfPlace--;
-                } else {
-                    break;
-                }
+        Deque<Block> stack1 = state.getStackList().get(0).getStack();
+        List<Block> list2 = new ArrayList<>(stack1);
+        int n2 = list2.size();
+
+        for(int i = n1-1, j = n2-1; i >= 0 && j >=0 ; i--, j--) {
+            //Can use == for Blocks. Unique blocks created. Check BlockFactory
+            if(goalList.get(i) == list2.get(j)) {
+                correctBlocksStack1.add(goalList.get(i));
+                misplacedBlocksCount--;
             }
         }
+        int cost = 0;
 
         List<BlockStack> stackList = state.getStackList();
         for (BlockStack stack : stackList) {
             List<Block> list = new ArrayList<>(stack.getStack());
-            if (list.isEmpty()) {
-                continue;
-            }
-            for (Block c : list) {
-                if (heurList.contains(c)) {
-                    continue;
+            if (!list.isEmpty()) {
+                for (Block block : list) {
+                    if (correctBlocksStack1.contains(block)) {
+                        continue;
+                    }
+                    int movesOutOfCurrentStack = list.indexOf(block) + 1;
+                    int correctBlockPosition = n1 - goalList.indexOf(block) - 1;
+                    int moves = 0;
+                    if (stackList.get(0) != null && stackList.get(0).getStack().size() > correctBlockPosition) {
+                        moves = correctBlockPosition + misplacedBlocksCount;
+                    }
+                    cost += movesOutOfCurrentStack + moves;
                 }
-                int stepsToGetOutOfStack = list.indexOf(c);
-                int positionInGoalNode =  list.size() - goalList.indexOf(c);
-                int stepsToPutItInCorrectPosn = 0;
-                if (stackList.get(0) != null && stackList.get(0).getStack().size() > positionInGoalNode) {
-                    stepsToPutItInCorrectPosn = stackList.get(0).getStack().size() - positionInGoalNode + blocksOutOfPlace;
-                }
-                cost += stepsToGetOutOfStack + stepsToPutItInCorrectPosn;
             }
+        }
+        cost = cost + cost;
+        //Weighting strategy
+        BlockStack stack0 = stackList.get(0);
+        int n3 = stack0.getStack().size();
+        if(n3 == 1) {
+            for (Block block : stack0.getStack()) {
+               // cost += block.getId() - 'A';
+            }
+        } else {
+          /*f(problem.getStackCount() > 5) {
+              //Giving more cost to a stack if the block at lower place is in correct position.
+              List<Block> list0 = new ArrayList<>(stack0.getStack());
+              if(n3 > 0 && list0.get(n3 - 1).getId() != 'A') {
+                  cost += misplacedBlocksCount;
+              }
+          }*/
+
         }
         return cost;
     }

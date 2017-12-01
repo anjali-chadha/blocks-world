@@ -1,3 +1,10 @@
+package com.invictus.blocksworld.algorithm;
+
+import com.invictus.blocksworld.gameworld.Node;
+import com.invictus.blocksworld.gameworld.Problem;
+import com.invictus.blocksworld.gameworld.State;
+import com.invictus.blocksworld.heuristics.Heuristic;
+
 import java.util.*;
 
 /**

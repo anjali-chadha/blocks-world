@@ -1,3 +1,9 @@
+package com.invictus.blocksworld.gameworld;
+
+import com.invictus.blocksworld.gameworld.Action;
+import com.invictus.blocksworld.gameworld.Block;
+import com.invictus.blocksworld.gameworld.BlockStack;
+
 import java.util.List;
 
 public class State {
@@ -58,7 +64,7 @@ public class State {
 	    return result;
     }
 
-    void printState() {
+    public void printState() {
         List<BlockStack> stacks = this.getStackList();
         System.out.println();
         for(BlockStack s: stacks) {

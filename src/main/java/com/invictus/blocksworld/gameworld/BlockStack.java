@@ -1,3 +1,7 @@
+package com.invictus.blocksworld.gameworld;
+
+import com.invictus.blocksworld.gameworld.Block;
+
 import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -29,7 +33,7 @@ public class BlockStack {
     int getId() {
         return id;
     }
-    Deque<Block> getStack() {
+    public Deque<Block> getStack() {
         return stack;
     }
 

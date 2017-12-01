@@ -1,3 +1,5 @@
+package com.invictus.blocksworld.algorithm;
+
 public class AStarAnalysis {
 
     private int iterationsCount;

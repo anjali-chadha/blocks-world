@@ -1,3 +1,5 @@
+package com.invictus.blocksworld.gameworld;
+
 import java.util.*;
 
 public class Problem {
@@ -7,7 +9,7 @@ public class Problem {
     private State goalState;
     private State initialState;
 
-    Problem(int blockCount, int stackCount) {
+    public Problem(int blockCount, int stackCount) {
         this.blockCount = blockCount;
         this.stackCount = stackCount;
         blockFactory = new BlockFactory(blockCount);
@@ -107,11 +109,11 @@ public class Problem {
 
     //Do the hashcode check first, followed by equality
     //Time saving
-    boolean isGoalState(State state) {
+    public boolean isGoalState(State state) {
         return state.equals(goalState);
     }
 
-    List<State> successor(State currentState) {
+    public List<State> successor(State currentState) {
         List<State> childStateList = new ArrayList<>();
         for(int i = 0; i < stackCount; i++) {
             for(int j = 0; j < stackCount; j++) {

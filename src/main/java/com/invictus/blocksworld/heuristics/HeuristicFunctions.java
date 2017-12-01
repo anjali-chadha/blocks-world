@@ -1,3 +1,10 @@
+package com.invictus.blocksworld.heuristics;
+
+import com.invictus.blocksworld.gameworld.Block;
+import com.invictus.blocksworld.gameworld.BlockStack;
+import com.invictus.blocksworld.gameworld.Problem;
+import com.invictus.blocksworld.gameworld.State;
+
 import java.util.*;
 
 public class HeuristicFunctions {

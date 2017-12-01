@@ -1,3 +1,10 @@
+package com.invictus.blocksworld.client;
+
+import com.invictus.blocksworld.algorithm.AStarAlgorithm;
+import com.invictus.blocksworld.algorithm.AStarAnalysis;
+import com.invictus.blocksworld.gameworld.Problem;
+import com.invictus.blocksworld.heuristics.HeuristicFunctions;
+
 import java.util.ArrayList;
 import java.util.List;
 

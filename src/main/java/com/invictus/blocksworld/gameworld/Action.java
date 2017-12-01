@@ -1,3 +1,5 @@
+package com.invictus.blocksworld.gameworld;
+
 /**
  * Defines the action taken while playing the game.
  * With reference to the Blocksworld, only one action is allowed.

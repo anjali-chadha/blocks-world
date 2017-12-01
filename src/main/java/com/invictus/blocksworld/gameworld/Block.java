@@ -1,3 +1,4 @@
+package com.invictus.blocksworld.gameworld;
 
 public class Block implements Comparable<Block>{
 

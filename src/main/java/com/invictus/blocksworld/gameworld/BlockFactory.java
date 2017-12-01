@@ -1,3 +1,7 @@
+package com.invictus.blocksworld.gameworld;
+
+import com.invictus.blocksworld.gameworld.Block;
+
 import java.util.ArrayList;
 import java.util.List;
 

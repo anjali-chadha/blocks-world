@@ -1,3 +1,5 @@
+package com.invictus.blocksworld.gameworld;
+
 /**
  * This bean class is similar to the data structure used in the book
  * @author zeus
@@ -10,12 +12,12 @@ public class Node implements Comparable<Node>{
 	private int costToReachNode; // g(n)
 	private int costToReachGoal; //h(n)
 
-	Node(State state, Node parent) {
+	public Node(State state, Node parent) {
 	    this.state = state;
 	    this.parent = parent;
     }
 
-	Node(State state, Node parent, int costToReachNode) {
+	public Node(State state, Node parent, int costToReachNode) {
 		this.state = state;
 		this.parent = parent;
 		this.costToReachNode = costToReachNode;
